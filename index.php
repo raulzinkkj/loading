@@ -2,8 +2,8 @@
 include 'conexao/conexao.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nome_tarefa = $_POST['nome_tarefa'];
-    $data_tarefa = $_POST['data_tarefa'];
+    $nome_tarefa = $_POST['nome_tarefa'] ?? null;
+    $data_tarefa = $_POST['data_tarefa'] ?? null;
     $estatus_tarefa = 'Pendente';
 
     $sql = "INSERT INTO tarefas (nome_tarefa, data_tarefa, estatus_tarefa)
@@ -261,6 +261,69 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             border-radius: 3px;
             cursor: pointer;
         }
+
+        .cabecalho {
+            margin-top: 30px;
+            border-bottom: solid 1px lightgray;
+            width: 100%;
+            height: 40px;
+            border-radius: 8px 8px 0 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: white;
+        }
+
+        .bolinha {
+            width: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .titulo {
+            width: 420px;
+            display: flex;
+            align-items: center;
+        }
+
+        .data {
+            width: 150px;
+            display: flex;
+            align-items: center;
+        }
+
+        .importancia {
+            width: 100px;
+            display: flex;
+            align-items: center;
+        }
+
+        .linha {
+            width: 100%;
+            height: 40px;
+            border-radius: 0 0 8px 8px;
+            display: flex;
+            align-items: center;
+            background: #FAF9F8;
+            gap: 15px;
+        }
+
+        input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 15px;
+            height: 15px;
+            border: 2px solid #2564CF;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .cel_linha form {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
     </style>
 </head>
 
@@ -389,23 +452,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 if ($stmt_mostra->rowCount() > 0) {
                     echo "<div class='cabecalho'>";
-                    echo "<div class='cel_cabecalho'></div>";
-                    echo "<div class='cel_cabecalho'>Título</div>";
-                    echo "<div class='cel_cabecalho'>Data de Vencimento</div>";
-                    echo "<div class='cel_cabecalho'>Importância</div>";
+                    echo "<div class='cel_cabecalho bolinha'></div>";
+                    echo "<div class='cel_cabecalho titulo'>Título</div>";
+                    echo "<div class='cel_cabecalho data'>Data de Vencimento</div>";
+                    echo "<div class='cel_cabecalho importancia'>Importância</div>";
                     echo "</div>"; //Fechamento da div cabeçalho
                 }
 
                 while ($linha = $stmt_mostra->fetch(PDO::FETCH_ASSOC)) {
                     echo "<div class='linha'>";
-                    echo "<div class='cel_linha>";
+                    echo "<div class='cel_linha bolinha'>";
                     echo "<form action='mudar_estatus.php' method='get'>
-                            <input type='text' value='{$linha['id_tarefa']}' name='id_tarefa'>
-                            <input type='checkbox' name='estatus_tarefa' value='1' onchange='this.form.submit()'>
+                            <input type='hidden' value='{$linha['id_tarefa']}' name='id_tarefa'>
+                            <input type='checkbox' name='estatus_tarefa' value='Concluido' onchange='this.form.submit()'>
                           </form>";
                     echo "</div>"; //fechamento da div cel_linha do formulario
-                    echo "<div class='cel_linha'>{$linha['nome_tarefa']}</div>";
-                    echo "<div class='cel_linha'>{$linha['data_tarefa']}</div>";
+                    echo "<div class='cel_linha titulo'>{$linha['nome_tarefa']}</div>";
+                    echo "<div class='cel_linha data'>{$linha['data_tarefa']}</div>";
+                    echo "<div class='cel_linha importancia'></div>";
                     echo "</div>"; //fechamento da div linha
                 }
                 ?>
