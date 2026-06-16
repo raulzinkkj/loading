@@ -285,6 +285,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             width: 420px;
             display: flex;
             align-items: center;
+            justify-content: space-between;
         }
 
         .data {
@@ -350,6 +351,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         .concluido {
             text-decoration: line-through;
+        }
+
+                .menu {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+        }
+
+        .menu li {
+            position: relative;
+        }
+
+        .submenu {
+            list-style: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 180px;
+            background: white;
+            border: 1px solid #ddd;
+            display: none;
+        }
+
+        .menu li:hover .submenu {
+            display: block;
+        }
+
+        .submenu li {
+            padding: 12px;
+        }
+
+        .submenu li:hover {
+            background: #f5f5f5;
         }
     </style>
 </head>
@@ -501,7 +535,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <input type='checkbox'" .  (($linha['estatus_tarefa'] == 'Concluido') ? 'checked' : '') . "  name='estatus_tarefa' value='Concluido' onchange='this.form.submit()'>
                           </form>";
                     echo "</div>"; //fechamento da div cel_linha do formulario
-                    echo "<div class='cel_linha titulo $classe'>{$linha['nome_tarefa']}</div>";
+                    echo "<div class='cel_linha titulo $classe'>{$linha['nome_tarefa']}<nav><ul class='menu'><li><img src='img/info_blue.svg' style='width: 18px;'><ul class='submenu'><li><a href='excluir_tarefa.php'>🗑️ Excluir</a></li></ul></li></ul></nav></div>";
                     echo "<div class='cel_linha data $classe'>" . date('d/m/Y', strtotime($linha['data_tarefa'])) . "</div>";
                     echo "<div class='cel_linha importancia $classe'></div>";
                     echo "</div>"; //fechamento da div linha
