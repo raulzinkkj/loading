@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .menu {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+        }
+
+        .menu li {
+            position: relative;
+        }
+
+        .submenu {
+            list-style: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 180px;
+            background: white;
+            border: 1px solid #ddd;
+            display: none;
+        }
+
+        .menu li:hover .submenu {
+            display: block;
+        }
+
+        .submenu li {
+            padding: 12px;
+        }
+
+        .submenu li:hover {
+            background: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+   <header>
+        <nav>
+            <ul class="menu">
+                <li>Ferramentas
+                    <ul class="submenu">
+                        <li>Martelo</li>
+                        <li>Serrote</li>
+                    </ul>
+                </li>
+                <li>Chave de Fenda</li>
+                <li>Parafusadeira</li>
+            </ul>
+        </nav>
+   </header> 
+</body>
+</html>

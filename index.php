@@ -329,19 +329,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             padding: 0;
         }
 
-        input[type="checkbox"]::after {
+
+        input[type="checkbox"]:checked::after {
             content: '✓';
             color: white;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0;
-            padding: 0;
-        }
-
-         input[type="checkbox"]::before {
-            content: '';
             font-weight: bold;
             display: flex;
             align-items: center;
@@ -507,9 +498,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     echo "<div class='cel_linha bolinha'>";
                     echo "<form action='api/mudar_estatus.php' method='get'>
                             <input type='hidden' value='{$linha['id_tarefa']}' name='id_tarefa' onchange='this.form.submit()'>
-                            <input type='checkbox'" .  ((if($linha['estatus_tarefa'] == 'Concluido')){
-                                                        ? 'checked' : '')
-                            }  . "  name='estatus_tarefa' value='Concluido' onchange='this.form.submit()'>
+                            <input type='checkbox'" .  (($linha['estatus_tarefa'] == 'Concluido') ? 'checked' : '') . "  name='estatus_tarefa' value='Concluido' onchange='this.form.submit()'>
                           </form>";
                     echo "</div>"; //fechamento da div cel_linha do formulario
                     echo "<div class='cel_linha titulo $classe'>{$linha['nome_tarefa']}</div>";
