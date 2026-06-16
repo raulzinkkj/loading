@@ -319,10 +319,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             cursor: pointer;
         }
 
+        input[type="checkbox"]:checked {
+            background: #00c853;
+            border-color: #00c853;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        input[type="checkbox"]::after {
+            content: '✓';
+            color: white;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+        }
+
+         input[type="checkbox"]::before {
+            content: '';
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+        }
+
+
         .cel_linha form {
             display: flex;
             justify-content: center;
             align-items: center;
+        }
+
+        .concluido {
+            text-decoration: line-through;
         }
     </style>
 </head>
@@ -460,16 +496,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
 
                 while ($linha = $stmt_mostra->fetch(PDO::FETCH_ASSOC)) {
-                    echo "<div class='linha'>";
+
+                    $classe = '';
+
+                    if ($linha['estatus_tarefa'] === 'Concluido') {
+                        $classe = 'concluido';
+                    }
+
+                    echo "<div class='linha '>";
                     echo "<div class='cel_linha bolinha'>";
-                    echo "<form action='mudar_estatus.php' method='get'>
-                            <input type='hidden' value='{$linha['id_tarefa']}' name='id_tarefa'>
-                            <input type='checkbox' name='estatus_tarefa' value='Concluido' onchange='this.form.submit()'>
+                    echo "<form action='api/mudar_estatus.php' method='get'>
+                            <input type='hidden' value='{$linha['id_tarefa']}' name='id_tarefa' onchange='this.form.submit()'>
+                            <input type='checkbox'" .  ((if($linha['estatus_tarefa'] == 'Concluido')){
+                                                        ? 'checked' : '')
+                            }  . "  name='estatus_tarefa' value='Concluido' onchange='this.form.submit()'>
                           </form>";
                     echo "</div>"; //fechamento da div cel_linha do formulario
-                    echo "<div class='cel_linha titulo'>{$linha['nome_tarefa']}</div>";
-                    echo "<div class='cel_linha data'>{$linha['data_tarefa']}</div>";
-                    echo "<div class='cel_linha importancia'></div>";
+                    echo "<div class='cel_linha titulo $classe'>{$linha['nome_tarefa']}</div>";
+                    echo "<div class='cel_linha data $classe'>" . date('d/m/Y', strtotime($linha['data_tarefa'])) . "</div>";
+                    echo "<div class='cel_linha importancia $classe'></div>";
                     echo "</div>"; //fechamento da div linha
                 }
                 ?>
