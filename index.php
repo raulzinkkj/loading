@@ -353,11 +353,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             text-decoration: line-through;
         }
 
-                .menu {
+        .menu {
             list-style: none;
             display: flex;
             gap: 20px;
         }
+
 
         .menu li {
             position: relative;
@@ -372,18 +373,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             background: white;
             border: 1px solid #ddd;
             display: none;
+            text-decoration: none;
+            z-index: 9999;
+            border-radius: 10px;
         }
 
-        .menu li:hover .submenu {
+        .mostra_menu li:hover .submenu {
             display: block;
         }
 
         .submenu li {
             padding: 12px;
+            border-radius: 10px;
         }
 
         .submenu li:hover {
             background: #f5f5f5;
+        }
+
+        a {
+            text-decoration: none;
+            cursor: pointer;
+            color: black;
         }
     </style>
 </head>
@@ -535,7 +546,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <input type='checkbox'" .  (($linha['estatus_tarefa'] == 'Concluido') ? 'checked' : '') . "  name='estatus_tarefa' value='Concluido' onchange='this.form.submit()'>
                           </form>";
                     echo "</div>"; //fechamento da div cel_linha do formulario
-                    echo "<div class='cel_linha titulo $classe'>{$linha['nome_tarefa']}<nav><ul class='menu'><li><img src='img/info_blue.svg' style='width: 18px;'><ul class='submenu'><li><a href='excluir_tarefa.php'>🗑️ Excluir</a></li></ul></li></ul></nav></div>";
+                    echo "<div class='cel_linha titulo $classe'>{$linha['nome_tarefa']}
+                    <form action='api/excluir_tarefa.php' method='get'>
+                     <input type='hidden' value='{$linha['id_tarefa']}' name='id_tarefa'>
+                    <div class='mostra_menu'><nav><ul class='menu'><li><img src='img/info_blue.svg' style='width: 18px; margin-left: 5px;'><ul class='submenu'><li><a href='api/excluir_tarefa.php'>🗑️ Excluir</a></li></ul></li></ul></nav></div></div></form>";
                     echo "<div class='cel_linha data $classe'>" . date('d/m/Y', strtotime($linha['data_tarefa'])) . "</div>";
                     echo "<div class='cel_linha importancia $classe'></div>";
                     echo "</div>"; //fechamento da div linha
