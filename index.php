@@ -34,7 +34,8 @@ $totalPaginas = ceil($totalRegistros / $limite);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="shortcut icon" href="img/favicon.svg" type="image/x-icon">
+    <title>Agenda</title>
     <style>
         * {
             margin: 0;
