@@ -7,4 +7,4 @@ $stmt = $conexao->prepare($sql);
 $stmt->bindParam(':id_tarefa', $id_tarefa);
 $stmt->execute();
 
-//header("Location: ../index.php");
+header("Location: ../index.php");

@@ -15,6 +15,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bindParam(':estatus_tarefa', $estatus_tarefa);
     $stmt->execute();
 }
+
+$pagina = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+$limite = 4;
+$offset = ($pagina - 1) * $limite;
+
+$sqlTotal = "SELECT COUNT(*) as total FROM tarefas";
+$stmtTotal = $conexao->prepare($sqlTotal);
+$stmtTotal->execute();
+
+$totalRegistros = $stmtTotal->fetch(PDO::FETCH_ASSOC)['total'];
+$totalPaginas = ceil($totalRegistros / $limite);
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -396,6 +408,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             cursor: pointer;
             color: black;
         }
+
+        .paginacao {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .btn-pag {
+            width: 35px;
+            height: 35px;
+            padding: 0 10px;
+            border-radius: 8px;
+            background: white;
+            border: 1px solid #dcdfe4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #333;
+            transition: 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-pag:hover {
+            background: #185FA5;
+            color: white;
+            border-color: #185FA5;
+        }
+
+        .btn-pag.ativo {
+            background: #185FA5;
+            color: white;
+            border-color: #185FA5;
+            font-weight: bold;
+        }
+
+        .proxima {
+            width: auto;
+        }
     </style>
 </head>
 
@@ -500,7 +553,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                     <div class="info">
                         <div class="group_icons">
-                            <input type="date" name="data_tarefa" id="calendario">
+                            <input type="date" name="data_tarefa" id="calendario" required>
                             <span id="mostra"></span>
                             <img src="img/bell.svg" alt="">
                             <img src="img/rotate-solid-full.svg" alt="">
@@ -517,9 +570,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <?php
                 include 'conexao/conexao.php';
 
-                $sql_mostra = "SELECT * FROM tarefas";
+                $sql_mostra = "SELECT * FROM tarefas LIMIT :limite OFFSET :offset";
                 $stmt_mostra = $conexao->prepare($sql_mostra);
-                //$stmt_mostra->bindParam(':id_tarefa', $id_tarefa);
+                $stmt_mostra->bindValue(':limite', $limite, PDO::PARAM_INT);
+                $stmt_mostra->bindValue(':offset', $offset, PDO::PARAM_INT);
                 $stmt_mostra->execute();
 
                 if ($stmt_mostra->rowCount() > 0) {
@@ -547,14 +601,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                           </form>";
                     echo "</div>"; //fechamento da div cel_linha do formulario
                     echo "<div class='cel_linha titulo $classe'>{$linha['nome_tarefa']}
-                    <form action='api/excluir_tarefa.php' method='get'>
-                     <input type='hidden' value='{$linha['id_tarefa']}' name='id_tarefa'>
-                    <div class='mostra_menu'><nav><ul class='menu'><li><img src='img/info_blue.svg' style='width: 18px; margin-left: 5px;'><ul class='submenu'><li><a href='api/excluir_tarefa.php'>🗑️ Excluir</a></li></ul></li></ul></nav></div></div></form>";
+                            <form action='api/excluir_tarefa.php' method='get'>
+                                <input type='hidden' value='{$linha['id_tarefa']}' name='id_tarefa'>
+                                    <div class='mostra_menu'>
+                                        <nav>
+                                            <ul class='menu'>
+                                                <li>
+                                                    <img src='img/info_blue.svg' style='width: 18px; margin-left: 5px;'>
+                                                    <ul class='submenu'>
+                                                        <li><a href='api/excluir_tarefa.php?id_tarefa={$linha['id_tarefa']}'>🗑️ Excluir</a></li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                    </div>
+                            </form>
+                         </div>";
                     echo "<div class='cel_linha data $classe'>" . date('d/m/Y', strtotime($linha['data_tarefa'])) . "</div>";
                     echo "<div class='cel_linha importancia $classe'></div>";
                     echo "</div>"; //fechamento da div linha
                 }
                 ?>
+            </div>
+            <div class="paginacao">
+                <?php if ($pagina > 1): ?>
+                    <a href="?page=<?php echo $pagina - 1; ?>" class="btn-pag proxima">◀️ Anterior</a>
+                <?php endif; ?>
+
+                <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
+                    <a class="btn-pag" href="?page=<?php echo $i; ?>"
+                        style="margin: 0 5px; <?php echo ($i == $pagina) ? 'ativo' : ''; ?>">
+                        <?php echo $i; ?>
+                    </a>
+                <?php endfor; ?>
+
+                <?php if ($pagina < $totalPaginas): ?>
+                    <a class="btn-pag proxima" href="?page=<?php echo $pagina + 1; ?>">Próxima ▶️</a>
+                <?php endif; ?>
             </div>
         </div>
     </section>
